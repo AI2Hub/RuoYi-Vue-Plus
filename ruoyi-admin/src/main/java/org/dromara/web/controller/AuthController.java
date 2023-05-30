@@ -3,10 +3,7 @@ package org.dromara.web.controller;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.hutool.core.collection.CollUtil;
 import org.dromara.common.core.domain.R;
-import org.dromara.common.core.domain.model.EmailLoginBody;
-import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.RegisterBody;
-import org.dromara.common.core.domain.model.SmsLoginBody;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -18,10 +15,11 @@ import org.dromara.system.service.ISysTenantService;
 import org.dromara.web.domain.vo.LoginTenantVo;
 import org.dromara.web.domain.vo.LoginVo;
 import org.dromara.web.domain.vo.TenantListVo;
+import org.dromara.web.factory.AuthFactory;
+import org.dromara.web.service.IAuthStrategy;
 import org.dromara.web.service.SysLoginService;
 import org.dromara.web.service.SysRegisterService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,62 +47,23 @@ public class AuthController {
     /**
      * 登录方法
      *
-     * @param body 登录信息
+     * @param loginBody 登录信息
      * @return 结果
      */
-    @PostMapping("/login")
-    public R<LoginVo> login(@Validated @RequestBody LoginBody body) {
+    @PostMapping("/login/{clientId}/{authType}")
+    public <T> R<LoginVo> login(@PathVariable String clientId,
+                                @PathVariable String authType,
+                                @RequestParam(required = false) String tenantId,
+                                @Validated @RequestBody T loginBody) {
+        // FIXME 后续不用泛型传参，考虑改为 req 获取
+        // 校验类型和id
+        loginService.checkAuthType(clientId, authType);
+        // FIXME 抽取出来，校验租户，前端没改暂时注释
+//        loginService.checkTenant(tenantId);
+        // 登录
         LoginVo loginVo = new LoginVo();
-        // 生成令牌
-        String token = loginService.login(
-                body.getTenantId(),
-                body.getUsername(), body.getPassword(),
-                body.getCode(), body.getUuid());
-        loginVo.setToken(token);
-        return R.ok(loginVo);
-    }
-
-    /**
-     * 短信登录
-     *
-     * @param body 登录信息
-     * @return 结果
-     */
-    @PostMapping("/smsLogin")
-    public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody body) {
-        LoginVo loginVo = new LoginVo();
-        // 生成令牌
-        String token = loginService.smsLogin(body.getTenantId(), body.getPhonenumber(), body.getSmsCode());
-        loginVo.setToken(token);
-        return R.ok(loginVo);
-    }
-
-    /**
-     * 邮件登录
-     *
-     * @param body 登录信息
-     * @return 结果
-     */
-    @PostMapping("/emailLogin")
-    public R<LoginVo> emailLogin(@Validated @RequestBody EmailLoginBody body) {
-        LoginVo loginVo = new LoginVo();
-        // 生成令牌
-        String token = loginService.emailLogin(body.getTenantId(), body.getEmail(), body.getEmailCode());
-        loginVo.setToken(token);
-        return R.ok(loginVo);
-    }
-
-    /**
-     * 小程序登录(示例)
-     *
-     * @param xcxCode 小程序code
-     * @return 结果
-     */
-    @PostMapping("/xcxLogin")
-    public R<LoginVo> xcxLogin(@NotBlank(message = "{xcx.code.not.blank}") String xcxCode) {
-        LoginVo loginVo = new LoginVo();
-        // 生成令牌
-        String token = loginService.xcxLogin(xcxCode);
+        IAuthStrategy authStrategy = AuthFactory.instance(authType);
+        String token = authStrategy.login(clientId, authStrategy.getLoginBody(loginBody));
         loginVo.setToken(token);
         return R.ok(loginVo);
     }

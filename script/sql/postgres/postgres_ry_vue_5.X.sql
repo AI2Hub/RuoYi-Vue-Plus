@@ -1132,6 +1132,44 @@ insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'X
 insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',         '','N', 'ap-beijing',  '1', '1', '', 103, 1, now(), 1, now(), null);
 insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',                 '','N', '',            '1', '1', '', 103, 1, now(), 1, now(), NULL);
 
+-- ----------------------------
+-- 系统授权表
+-- ----------------------------
+drop table if exists sys_auth;
+create table sys_auth (
+    id            int8,
+    client_id     varchar(64)   ''::varchar,
+    client_key    varchar(32)   ''::varchar,
+    client_secret varchar(255)  ''::varchar,
+    auth_type     varchar(255)  ''::varchar,
+    status        char(1)       default '0'::bpchar,
+    del_flag      char(1)       default '0'::bpchar,
+    create_dept   int8,
+    create_by     int8,
+    create_time   timestamp,
+    update_by     int8,
+    update_time   timestamp,
+    constraint sys_auth_pk primary key (id)
+)
+
+comment on table sys_auth                   is '系统授权表';
+comment on column sys_auth.id               is '主建';
+comment on column sys_auth.client_id        is '客户端id';
+comment on column sys_auth.client_key       is '客户端key';
+comment on column sys_auth.client_secret    is '客户端秘钥';
+comment on column sys_auth.auth_type        is '授权类型';
+comment on column sys_auth.status           is '状态（0正常 1停用）';
+comment on column sys_auth.del_flag         is '删除标志（0代表存在 2代表删除）';
+comment on column sys_auth.create_dept      is '创建部门';
+comment on column sys_auth.create_by        is '创建者';
+comment on column sys_auth.create_time      is '创建时间';
+comment on column sys_auth.update_by        is '更新者';
+comment on column sys_auth.update_time      is '更新时间';
+
+insert into sys_auth values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password', 0, 0, 103, 1, now(), 1, now());
+insert into sys_auth values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms', 0, 0, 103, 1, now(), 1, now());
+
+
 -- 字符串自动转时间 避免框架时间查询报错问题
 create or replace function cast_varchar_to_timestamp(varchar) returns timestamptz as $$
 select to_timestamp($1, 'yyyy-mm-dd hh24:mi:ss');

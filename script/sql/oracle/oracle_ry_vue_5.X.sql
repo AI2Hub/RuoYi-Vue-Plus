@@ -1108,6 +1108,42 @@ insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'X
 insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',  '1', '1', '', NULL, 103, 1, sysdate, 1, sysdate);
 insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',            '1', '1', '', NULL, 103, 1, sysdate, 1, sysdate);
 
+-- ----------------------------
+-- 系统授权表
+-- ----------------------------
+create table sys_auth (
+    id            number(20)    not null,
+    client_id     varchar(64)   default null,
+    client_key    varchar(32)   default null,
+    client_secret varchar(255)  default null,
+    auth_type     varchar(255)  default null,
+    status        char(1)       default '0',
+    del_flag      char(1)       default '0',
+    create_dept   number(20)    default null,
+    create_by     number(20)    default null,
+    create_time   date,
+    update_by     number(20)    default null,
+    update_time   date
+)
+
+alter table sys_auth add constraint pk_sys_auth primary key (id);
+
+comment on table sys_auth                   is '系统授权表';
+comment on column sys_auth.id               is '主建';
+comment on column sys_auth.client_id        is '客户端id';
+comment on column sys_auth.client_key       is '客户端key';
+comment on column sys_auth.client_secret    is '客户端秘钥';
+comment on column sys_auth.auth_type        is '授权类型';
+comment on column sys_auth.status           is '状态（0正常 1停用）';
+comment on column sys_auth.del_flag         is '删除标志（0代表存在 2代表删除）';
+comment on column sys_auth.create_dept      is '创建部门';
+comment on column sys_auth.create_by        is '创建者';
+comment on column sys_auth.create_time      is '创建时间';
+comment on column sys_auth.update_by        is '更新者';
+comment on column sys_auth.update_time      is '更新时间';
+
+insert into sys_auth values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password', 0, 0, 103, 1, sysdate, 1, sysdate);
+insert into sys_auth values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms', 0, 0, 103, 1, sysdate, 1, sysdate);
 
 -- ----------------------------
 -- 钩子 ，用于session连接之后 自动设置默认的date类型格式化 简化时间查询

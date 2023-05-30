@@ -2819,3 +2819,107 @@ INSERT INTO sys_oss_config VALUES (N'4', N'000000', N'qcloud', N'XXXXXXXXXXXXXXX
 GO
 INSERT INTO sys_oss_config VALUES (N'5', N'000000', N'image',  N'ruoyi',           N'ruoyi123',        N'ruoyi',            N'image', N'127.0.0.1:9000',               N'',N'N', N'',           N'1', N'1', N'', 103, 1, getdate(), 1, getdate(), NULL)
 GO
+
+CREATE TABLE sys_auth
+(
+    id bigint                                   NOT NULL,
+    client_id       nvarchar(20)  DEFAULT ''    NULL,
+    client_key      nvarchar(255) DEFAULT ''    NULL,
+    client_secret   nvarchar(255) DEFAULT ''    NULL,
+    auth_type       nvarchar(255) DEFAULT ''    NULL,
+    status          nchar(1)      DEFAULT ('0') NULL,
+    del_flag        nchar(1)      DEFAULT ('0') NULL,
+    create_dept     bigint                      NULL,
+    create_by       bigint                      NULL,
+    create_time     datetime2(7)                NULL,
+    update_by       bigint                      NULL,
+    update_time     datetime2(7)                NULL
+    CONSTRAINT PK__sys_auth___BFBDE87009ED2882 PRIMARY KEY CLUSTERED (id)
+        WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+        ON [PRIMARY]
+)
+ON [PRIMARY]
+GO
+
+EXEC sp_addextendedproperty
+    'MS_Description', N'主建',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'id'
+GO
+EXEC sys.sp_addextendedproperty
+    'MS_Description', N'客户端id' ,
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'tenant_id'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'客户端key',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'client_key'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'客户端秘钥',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'client_secret'
+GO
+EXEC sp_addextendedproperty
+     'MS_Description', N'授权类型',
+     'SCHEMA', N'dbo',
+     'TABLE', N'sys_auth',
+     'COLUMN', N'auth_type'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'状态（0正常 1停用）',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_oss_config',
+    'COLUMN', N'status'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'删除标志（0代表存在 2代表删除）',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'del_flag'
+GO
+EXEC sys.sp_addextendedproperty
+    'MS_Description', N'创建部门' ,
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'create_dept'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'创建者',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'create_by'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'创建时间',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'create_time'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'更新者',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'update_by'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'更新时间',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth',
+    'COLUMN', N'update_time'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'系统授权表',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_auth'
+GO
+
+INSERT INTO sys_auth VALUES (N'1', N'e5cd7e4891bf95d1d19206ce24a7b32e', N'pc', N'pc123', N'password', N'0', N'0', 103, 1, getdate(), 1, getdate())
+GO
+INSERT INTO sys_auth VALUES (N'2', N'428a8310cd442757ae699df5d894f051', N'app', N'app123', N'password,sms', N'0', N'0', 103, 1, getdate(), 1, getdate())
+GO

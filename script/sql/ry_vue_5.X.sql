@@ -795,3 +795,26 @@ insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'X
 insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',   '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
 insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',   '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
 insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
+
+-- ----------------------------
+-- 系统授权表
+-- ----------------------------
+drop table if exists sys_auth;
+create table sys_auth (
+    id            bigint(20)    not null            comment 'id',
+    client_id     varchar(64)   default null        comment '客户端id',
+    client_key    varchar(32)   default null        comment '客户端key',
+    client_secret varchar(255)  default null        comment '客户端秘钥',
+    auth_type     varchar(255)  default null        comment '授权类型',
+    status        char(1)       default '0'         comment '状态（0正常 1停用）',
+    del_flag      char(1)       default '0'         comment '删除标志（0代表存在 2代表删除）',
+    create_dept   bigint(20)    default null        comment '创建部门',
+    create_by     bigint(20)    default null        comment '创建者',
+    create_time   datetime      default null        comment '创建时间',
+    update_by     bigint(20)    default null        comment '更新者',
+    update_time   datetime      default null        comment '更新时间',
+    primary key (id)
+) engine=innodb comment='系统授权表';
+
+insert into sys_auth values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password', 0, 0, 103, 1, sysdate(), 1, sysdate());
+insert into sys_auth values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms', 0, 0, 103, 1, sysdate(), 1, sysdate());
